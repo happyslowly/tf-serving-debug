@@ -1,0 +1,1 @@
+TF_CPP_MIN_VLOG_LEVEL=0 bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --rest_api_port=8080 --model_base_path=/home/xixu/development/projects/tf-models/simple-model --enable_batching=true --batching_parameters_file=batch.config --file_system_poll_wait_seconds=3600 2>&1 | tee service.log

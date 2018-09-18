@@ -16,6 +16,7 @@ limitations under the License.
 #include "tensorflow_serving/batching/batching_session.h"
 
 #include <stddef.h>
+#include <typeinfo>
 
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/tensor_shape.h"
@@ -90,6 +91,9 @@ std::vector<std::vector<std::pair<string, Tensor>>> GetTaskInputsVector(
     const std::vector<std::pair<string, Tensor>>& task_inputs =
         *batch.task(i).inputs;
     all_task_inputs.push_back(task_inputs);
+    for (auto i = task_inputs.begin(); i != task_inputs.end(); ++i)
+        std::cout << (*i).first << ' ';
+    std::cout << std::endl;
   }
   return all_task_inputs;
 }
@@ -289,6 +293,7 @@ Status BatchingSession::Run(
   BatchScheduler<BatchingSessionTask>* batch_scheduler =
       batch_scheduler_it->second.get();
 
+  VLOG(0) << typeid(*batch_scheduler).name();
   outputs->clear();
 
   Notification done;
@@ -306,6 +311,9 @@ Status BatchingSession::Run(
 
   TF_RETURN_IF_ERROR(batch_scheduler->Schedule(&task));
   done.WaitForNotification();
+  for (auto i = outputs->begin(); i != outputs->end(); ++i)
+      VLOG(0) << i->DebugString();
+  VLOG(0) << status;
   return status;
 }
 

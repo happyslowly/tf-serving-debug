@@ -20,6 +20,7 @@ limitations under the License.
 #include <string>
 #include <utility>
 #include <vector>
+#include <typeinfo>
 
 #include "absl/strings/str_join.h"
 #include "tensorflow/cc/saved_model/signature_constants.h"
@@ -187,6 +188,10 @@ Status RunPredict(const RunOptions& run_options,
                                           &output_tensor_aliases));
   std::vector<Tensor> outputs;
   RunMetadata run_metadata;
+  VLOG(0) << signature_name;
+  for (auto i = input_tensors.begin(); i != input_tensors.end(); ++i)
+      VLOG(0) << (*i).first;
+  VLOG(0) << typeid(*session).name();
   TF_RETURN_IF_ERROR(session->Run(run_options, input_tensors,
                                   output_tensor_names, {}, &outputs,
                                   &run_metadata));
