@@ -227,6 +227,7 @@ Status BatchingSession::Create(
     const std::vector<SignatureWithBatchingSessionSchedulerCreator>&
         signatures_with_scheduler_creators,
     std::unique_ptr<BatchingSession>* result) {
+  VLOG(0) << "create batching session...";
   auto batching_session =
       std::unique_ptr<BatchingSession>(new BatchingSession(options));
   BatchingSession* raw_batching_session = batching_session.get();
@@ -267,6 +268,7 @@ Status BatchingSession::Run(
     const std::vector<string>& output_tensor_names,
     const std::vector<string>& target_node_names, std::vector<Tensor>* outputs,
     RunMetadata* run_metadata) {
+  VLOG(0) << "running...";
   if (!target_node_names.empty()) {
     return errors::PermissionDenied(
         "BatchingSession does not support target nodes");
@@ -470,6 +472,7 @@ Status BatchingSession::SplitOutputTensors(
     const TensorSignature& signature,
     const std::vector<Tensor>& combined_outputs,
     Batch<BatchingSessionTask>* batch) {
+  VLOG(0) << "start splitting tensors...";
   DCHECK_GE(batch->num_tasks(), 1);
   if (batch->num_tasks() < 1) {
     return errors::Internal("Batch size expected to be positive; was ",
@@ -551,6 +554,8 @@ void BatchingSession::ProcessBatch(
   // As a possible performance optimization, consider overlapping the tensor
   // concatenation with waiting for the batch to close (i.e. do the
   // concatenation incrementally as tasks stream into the batch).
+  VLOG(0) << "start processing...";
+
   batch->WaitUntilClosed();
 
   if (batch->empty()) {
